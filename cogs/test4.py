@@ -24,8 +24,11 @@ class VoteBot(commands.Cog):
             return
         if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
             reactions = ['✅', '❌']
+        elif len(options) == 2 and options[0] == 'no' and options[1] == 'yes':
+            reactions = ['❌', '✅']
         else:
             reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
+
         description = []
         for i, option in enumerate(options):
             description += '\n{} {}\n'.format(reactions[i], option)
