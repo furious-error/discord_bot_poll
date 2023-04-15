@@ -16,8 +16,8 @@ class VoteBot(commands.Cog):
     async def poll(self, ctx, duration: int, question, *options):
         duration_second = int(duration) * 60
 
-        if len(options) <= 1:
-            await ctx.send('You need more than one option to create a poll!')
+        if len(options) <= 2:
+            await ctx.send('You need more than two option to create a poll!')
             return
         if len(options) > 10:
             await ctx.send('You cannot create a poll with more than 10 options!')
