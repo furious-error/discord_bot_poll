@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
@@ -13,9 +14,10 @@ class VoteBot(commands.Cog):
 
 
     @commands.command(pass_context=True)
-    async def poll(self, ctx, duration: int, question, *options):
-        duration_second = int(duration) * 60
-
+    async def poll(self, ctx, duration:int, question, *options):
+        duration_minute = int(duration) * 60
+        final_datetime = datetime.datetime.now() + datetime.timedelta(minutes=duration)
+        end_datetime = final_datetime.strftime("%b %d, %Y, %I:%M %p")
         if len(options) <= 2:
             await ctx.send('You need more than two option to create a poll!')
             return
@@ -33,11 +35,13 @@ class VoteBot(commands.Cog):
         for i, option in enumerate(options):
             description += '\n{} {}\n'.format(reactions[i], option)
         embed = discord.Embed(title=question, description=''.join(description))
+        embed.add_field(name='Poll will end on {}'.format(end_datetime), value='', inline=True)
         react_message = await ctx.send(embed=embed)
         for reaction in reactions[:len(options)]:
             await react_message.add_reaction(reaction)
 
-        await asyncio.sleep(duration_second)  # Wait for the duration of the poll
+        
+        await asyncio.sleep(duration_minute)  # Wait for the duration of the poll
 
         # Get the poll results
         message = await ctx.channel.fetch_message(react_message.id)
