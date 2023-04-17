@@ -19,7 +19,7 @@ class VoteBot(commands.Cog):
         final_datetime = datetime.datetime.now() + datetime.timedelta(minutes=duration)
         end_datetime = final_datetime.strftime("%b %d, %Y, %I:%M %p")
         if len(options) <= 2:
-            await ctx.send('You need more than two option to create a poll!')
+            await ctx.send('You need atleast two option to create a poll!')
             return
         if len(options) > 10:
             await ctx.send('You cannot create a poll with more than 10 options!')
@@ -36,11 +36,12 @@ class VoteBot(commands.Cog):
             description += '\n{} {}\n'.format(reactions[i], option)
         embed = discord.Embed(title=question, description=''.join(description))
         embed.add_field(name='Poll will end on {}'.format(end_datetime), value='', inline=True)
+        embed.add_field(name='\n', value='{} created the poll.'.format(ctx.author), inline=False)
         react_message = await ctx.send(embed=embed)
         for reaction in reactions[:len(options)]:
             await react_message.add_reaction(reaction)
 
-        
+
         await asyncio.sleep(duration_minute)  # Wait for the duration of the poll
 
         # Get the poll results
@@ -64,15 +65,6 @@ class VoteBot(commands.Cog):
         # Disable reactions on the poll message
         for reaction in message.reactions:
             await reaction.clear()
-
-        
-    # @poll_error
-    async def poll_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.send('Duration must be a valid integer!')
-        else:
-            await ctx.send('An error occurred while processing the command!')
-
 
 
 async def setup(bot):
